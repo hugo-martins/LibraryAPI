@@ -1,11 +1,9 @@
 package br.com.phoebustecnologia.Library.clientTest;
 
 
-import br.com.phoebustecnologia.Library.Repositories.ClientRepository;
 import br.com.phoebustecnologia.Library.model.Client;
 import br.com.phoebustecnologia.Library.model.SexClient;
 import br.com.phoebustecnologia.Library.services.ClientServices;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

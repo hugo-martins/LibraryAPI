@@ -4,6 +4,7 @@ import br.com.phoebustecnologia.Library.model.Book;
 import br.com.phoebustecnologia.Library.model.Category;
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,9 +16,11 @@ import java.util.stream.Collectors;
 @Builder
 public class CategoryDTO implements Serializable {
 
-    private static final long SerialVersionID = 115645145L;
+    private static final long SerialVersionID = 1L;
 
-    private long id;
+    private Long id;
+
+    @NotNull
     private String name;
 
     public static CategoryDTO categoryDTO (Category categoryEntity){

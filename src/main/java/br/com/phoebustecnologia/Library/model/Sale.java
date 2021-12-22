@@ -17,7 +17,7 @@ import java.util.Set;
 public class Sale implements Serializable {
 
 
-    private static final Long serialVersionId = 255155656L;
+    private static final long serialVersionId = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class Sale implements Serializable {
     private Set<Book> bookPurchase;
 
     @Column(name = "valuePurchase")
-    private double valuePurchase;
+    private Double valuePurchase;
 
     @Column(name = "datePurchase")
     private LocalDate datePurchase;

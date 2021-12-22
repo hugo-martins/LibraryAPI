@@ -17,14 +17,16 @@ import java.util.Set;
 @Table(name = "Categories")
 public class Category implements Serializable {
 
-    private static final long SerialVersionID =  1;
+    private static final long SerialVersionID =  1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+
     private String name;
 
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany
     private final Set<Book> books = new HashSet<>();
 
     public static Category categoryFrom(CategoryDTO categoryDTO){

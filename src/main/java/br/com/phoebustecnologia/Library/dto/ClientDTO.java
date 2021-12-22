@@ -8,6 +8,7 @@ import lombok.*;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,12 +20,22 @@ import java.util.stream.Collectors;
 @Builder
 public class ClientDTO implements Serializable {
 
-    private static final long SerialVersionId = 4564545L;
+    private static final long SerialVersionId = 1L;
     private Long id;
+
+    @NotNull
     private String name;
+
+    @NotNull
     private Integer age;
+
+    @NotNull
     private String phone;
+
+    @NotNull
     private String email;
+
+    @NotNull
     private SexClient sex;
 
     public static ClientDTO clientDTO(Client clientEntity){

@@ -21,7 +21,7 @@ import java.util.Set;
 @Builder
 public class SaleDTO  implements Serializable {
 
-    private static final long SerialVersionId =  61465L;
+    private static final long SerialVersionId =  1L;
     private Long id;
 
     @ManyToOne
@@ -33,7 +33,7 @@ public class SaleDTO  implements Serializable {
     private Set<Book> bookPurchase;
 
     @Column(name = "valuePurchase")
-    private double valuePurchase;
+    private Double valuePurchase;
 
     @Column(name = "datePurchase")
     private LocalDate datePurchase;

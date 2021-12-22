@@ -17,26 +17,32 @@ import java.util.Set;
 @Table(name = "Books")
 @Builder
 
-public class Book extends BookDTO implements Serializable {
+public class Book implements Serializable {
 
-    private static final long SerialVersionID = 15556114545L;
+    private static final long SerialVersionID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+
     private String title;
+
     private String synopsis;
+
     private String isbn;
+
     private String author;
+
     private LocalDate publicationYear;
+
     private Double priceSell;
-    private Integer quantAvailable;
+
+    private Integer availableQuantity;
 
 
-    @ManyToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @PrimaryKeyJoinColumn
-    @lombok.Builder.Default
     private Set<Category> categories = new HashSet<>();
 
     public static Book bookFrom(BookDTO bookDTO) {
@@ -50,7 +56,7 @@ public class Book extends BookDTO implements Serializable {
                 .publicationYear(bookDTO.getPublicationYear())
                 .categories(bookDTO.getCategories())
                 .priceSell(bookDTO.getPriceSell())
-                .quantAvailable(bookDTO.getQuantAvailable())
+                .availableQuantity(bookDTO.getAvailableQuantity())
                 .build();
     }
 

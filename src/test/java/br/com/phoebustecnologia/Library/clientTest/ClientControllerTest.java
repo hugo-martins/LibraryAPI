@@ -1,13 +1,9 @@
 package br.com.phoebustecnologia.Library.clientTest;
 
 
-import br.com.phoebustecnologia.Library.controller.BookController;
 import br.com.phoebustecnologia.Library.controller.ClientController;
 import br.com.phoebustecnologia.Library.model.SexClient;
 import br.com.phoebustecnologia.Library.services.ClientServices;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.restassured.RestAssured;
-import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;

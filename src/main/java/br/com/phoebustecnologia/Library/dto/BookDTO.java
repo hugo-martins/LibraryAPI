@@ -3,7 +3,6 @@ package br.com.phoebustecnologia.Library.dto;
 import br.com.phoebustecnologia.Library.model.Book;
 import br.com.phoebustecnologia.Library.model.Category;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 public class BookDTO implements Serializable {
 
 
-    private static final long SerialVersionID = 45451515L;
+    private static final long SerialVersionID = 1L;
 
     private Long id;
 
@@ -42,7 +41,7 @@ public class BookDTO implements Serializable {
     private Double priceSell;
 
     @NotNull
-    private Integer quantAvailable;
+    private Integer availableQuantity;
 
     @NotNull
     private Set<Category> categories;
@@ -58,7 +57,7 @@ public class BookDTO implements Serializable {
                 .publicationYear(bookEntity.getPublicationYear())
                 .categories(bookEntity.getCategories())
                 .priceSell(bookEntity.getPriceSell())
-                .quantAvailable(bookEntity.getQuantAvailable())
+                .availableQuantity(bookEntity.getAvailableQuantity())
                 .build();
     }
 

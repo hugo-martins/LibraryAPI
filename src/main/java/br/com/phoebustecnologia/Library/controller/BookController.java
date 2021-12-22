@@ -16,6 +16,7 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class BookController {
 
+
     @Autowired
     BookServices bookServices;
 
@@ -26,10 +27,10 @@ public class BookController {
         return BookDTO.ListFromAllBooks(bookServices.findAll());
     }
 
-    @ApiOperation("Get a book")
+    @ApiOperation("Get a bo1ok")
     @GetMapping(value = "/{id}")
     public BookDTO bookListById(@PathVariable Long id) {
-        return bookServices.bookByID(id);
+        return BookDTO.bookDTO(bookServices.findById(id));
 
     }
 
@@ -42,7 +43,9 @@ public class BookController {
 
     @ApiOperation("Save an book")
     @PostMapping
-    public void addBook(@RequestBody BookDTO bookDTO) {bookServices.save(Book.bookFrom(bookDTO));}
+    public void addBook(@RequestBody BookDTO bookDTO) {
+        bookServices.save(Book.bookFrom(bookDTO));
+    }
 
     @ApiOperation("Delete an Book")
     @DeleteMapping(value = "/{id}")
@@ -55,6 +58,6 @@ public class BookController {
     @PutMapping(value = "/{id}")
     public void updateBook(@RequestBody BookDTO bookDTO, @PathVariable Long id) {
         bookDTO.setId(id);
-        bookServices.update(bookDTO);
+        bookServices.update(Book.bookFrom(bookDTO));
     }
 }

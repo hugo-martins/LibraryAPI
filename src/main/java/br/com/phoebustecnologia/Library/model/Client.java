@@ -4,6 +4,7 @@ import br.com.phoebustecnologia.Library.dto.ClientDTO;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
@@ -15,14 +16,19 @@ import java.io.Serializable;
 @Table(name = "clients")
 public class Client implements Serializable {
 
-    private static final Long serialVersionUID = 12345L;
+    private static final Long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     private String phone;
+
     private String email;
+
+
     private Integer age;
 
     @Enumerated(EnumType.STRING)

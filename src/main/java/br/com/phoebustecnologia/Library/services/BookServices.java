@@ -1,7 +1,6 @@
 package br.com.phoebustecnologia.Library.services;
 
 import br.com.phoebustecnologia.Library.Repositories.BookRepository;
-import br.com.phoebustecnologia.Library.dto.BookDTO;
 import br.com.phoebustecnologia.Library.exceptions.BookNotFoundException;
 import br.com.phoebustecnologia.Library.model.Book;
 import br.com.phoebustecnologia.Library.model.Category;
@@ -15,9 +14,10 @@ import java.util.Set;
 @Service
 public class BookServices  {
 
-    @Autowired
-    private BookRepository bookRepository;
 
+
+    @Autowired
+    BookRepository bookRepository;
 
     //Listar todos os livros
     public List<Book> findAll(){
@@ -30,14 +30,16 @@ public class BookServices  {
     }
 
     //Pesquisar livro por ID;
-    public Book bookByID(Long id){
+    public Book findById(Long id){
         return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
     }
 
     //Salvar Livro
     public void save(Book book){
-        if(!bookRepository.existsById(book.getId())){
-            throw new BookNotFoundException();
+        if(book.getId()!=null) {
+            if (!bookRepository.existsById(book.getId())) {
+                throw new BookNotFoundException();
+            }
         }
         Set<Category> categorySet = new HashSet<>(book.getCategories());
         book.setCategories(categorySet);
@@ -54,25 +56,25 @@ public class BookServices  {
     }
 
     //Atualizar Livro
-    public void update(BookDTO bookDTO){
-        if(!bookRepository.existsById(bookDTO.getId())){
+    public void update(Book book){
+        if(!bookRepository.existsById(book.getId())){
             throw new BookNotFoundException();
         }
-        Book obj = bookByID(bookDTO.getId());
-        updateValuesBook(obj, bookDTO);
+        Book obj = findById(book.getId());
+        updateValuesBook(obj, book);
         bookRepository.save(obj);
 
     }
 
     //Método para salvar e atualizar entidades dos livros
-    public void updateValuesBook(BookDTO newObj, BookDTO oldObj){
+    public void updateValuesBook(Book newObj, Book oldObj){
         newObj.setCategories(oldObj.getCategories());
         newObj.setTitle(oldObj.getTitle());
         newObj.setIsbn(oldObj.getIsbn());
         newObj.setAuthor(oldObj.getAuthor());
         newObj.setSynopsis(oldObj.getSynopsis());
         newObj.setPublicationYear(oldObj.getPublicationYear());
-        newObj.setQuantAvailable(oldObj.getQuantAvailable());
+        newObj.setAvailableQuantity((oldObj.getAvailableQuantity()));
         newObj.setPriceSell(oldObj.getPriceSell());
 
         }
