@@ -1,17 +1,16 @@
-package br.com.phoebustecnologia.Library.clientTest;
+package br.com.phoebustecnologia.Library.services.clientTestService;
 
 import br.com.phoebustecnologia.Library.model.Client;
 import br.com.phoebustecnologia.Library.model.SexClient;
 
-public class ClientTest {
+public class ClientTestBuilder {
 
     public static Client.ClientBuilder createClient(){
         return Client.builder()
-                .id(1L)
-                .name("Hugo Silva Martins")
+                .name("clientTest")
                 .phone("5415-6515")
                 .email("emailteste@test.com")
-                .age(23)
+                .age(20)
                 .sex(SexClient.MASCULINE);
     }
 }

@@ -19,4 +19,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "WHERE C.ID = :idCat", nativeQuery = true)
     List<Book> findByCategoryId(@Param(value = "idCat") Long idCat);
 
+
 }

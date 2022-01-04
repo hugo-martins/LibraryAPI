@@ -1,9 +1,11 @@
 package br.com.phoebustecnologia.Library.services;
 
 import br.com.phoebustecnologia.Library.Repositories.BookRepository;
+import br.com.phoebustecnologia.Library.exceptions.BookExistException;
 import br.com.phoebustecnologia.Library.exceptions.BookNotFoundException;
 import br.com.phoebustecnologia.Library.model.Book;
 import br.com.phoebustecnologia.Library.model.Category;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,18 +34,19 @@ public class BookServices  {
     //Pesquisar livro por ID;
     public Book findById(Long id){
         return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
+
     }
 
     //Salvar Livro
-    public void save(Book book){
+    public Book save(Book book){
         if(book.getId()!=null) {
-            if (!bookRepository.existsById(book.getId())) {
-                throw new BookNotFoundException();
-            }
+            throw new BookExistException();
+
         }
         Set<Category> categorySet = new HashSet<>(book.getCategories());
         book.setCategories(categorySet);
-        bookRepository.save(book);
+        Book b = bookRepository.save(book);
+        return  b;
 
     }
 
@@ -56,7 +59,7 @@ public class BookServices  {
     }
 
     //Atualizar Livro
-    public void update(Book book){
+    public Book update(@NotNull Book book){
         if(!bookRepository.existsById(book.getId())){
             throw new BookNotFoundException();
         }
@@ -64,6 +67,7 @@ public class BookServices  {
         updateValuesBook(obj, book);
         bookRepository.save(obj);
 
+        return obj;
     }
 
     //Método para salvar e atualizar entidades dos livros

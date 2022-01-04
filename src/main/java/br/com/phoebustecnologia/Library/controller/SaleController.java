@@ -25,31 +25,31 @@ public class SaleController {
 
     @GetMapping(value = "/all")
     public List<Sale> saleList() {
-        return saleServices.findSaleAll();
+        return saleServices.findAll();
 
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Sale> saleListById(@PathVariable Long id) {
-        Sale obj = saleServices.saleByID(id);
+        Sale obj = saleServices.findById(id);
         return ResponseEntity.ok().body(obj);
     }
 
     @PostMapping
     public void addSale(@RequestBody SaleDTO sale) {
-        saleServices.saveSale(Sale.saleFROM(sale));
+        saleServices.save(Sale.saleFROM(sale));
     }
 
     @DeleteMapping(value = "/{id}")
     public void  deleteSale(@PathVariable Long id) {
-        saleServices.deleteSale(id);
+        saleServices.delete(id);
 
     }
 
     @PutMapping(value = "/{id}")
     public void updateSale(@RequestBody SaleDTO sale, @PathVariable Long id) {
         sale.setId(id);
-        saleServices.updateSale(Sale.saleFROM(sale));
+        saleServices.update(Sale.saleFROM(sale));
 
     }
 

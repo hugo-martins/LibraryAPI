@@ -1,6 +1,7 @@
 package br.com.phoebustecnologia.Library.services;
 
 import br.com.phoebustecnologia.Library.Repositories.SaleRepository;
+import br.com.phoebustecnologia.Library.exceptions.ClientExistException;
 import br.com.phoebustecnologia.Library.exceptions.SaleNotFoundException;
 import br.com.phoebustecnologia.Library.model.Sale;
 import br.com.phoebustecnologia.Library.model.Status;
@@ -22,22 +23,25 @@ public class SaleServices {
     }
 
     //Pesquisar lista de Compras
-    public List<Sale> findSaleAll(){
+    public List<Sale> findAll(){
         return saleRepository.findAll();
     }
 
     //Pesquisar compra por ID;
-    public Sale saleByID(Long id){
+    public Sale findById(Long id){
         return saleRepository.findById(id).orElseThrow(SaleNotFoundException::new);
     }
 
     //Salvar venda
-    public Sale saveSale(Sale sale){
+    public Sale save(Sale sale){
+        if(sale.getId()!=null){
+            throw new SaleNotFoundException();
+        }
         return saleRepository.save(sale);
     }
 
     //Deletar venda
-    public void deleteSale(Long id){
+    public void delete(Long id){
         if(!saleRepository.existsById(id)){
             throw new SaleNotFoundException();
         }
@@ -45,14 +49,15 @@ public class SaleServices {
     }
 
     //Atualizar Sale
-    public void updateSale(Sale sale){
+    public Sale update(Sale sale){
         if(!saleRepository.existsById(sale.getId())){
             throw new SaleNotFoundException();
         }
-        Sale obj = saleByID(sale.getId());
+        Sale obj = findById(sale.getId());
         updateValuesSale(obj, sale);
         saleRepository.save(obj);
 
+        return obj;
     }
 
     //Método para salvar e atualizar entidades das vendas

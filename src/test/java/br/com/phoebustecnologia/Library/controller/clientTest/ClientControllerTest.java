@@ -1,4 +1,4 @@
-package br.com.phoebustecnologia.Library.clientTest;
+package br.com.phoebustecnologia.Library.controller.clientTest;
 
 
 import br.com.phoebustecnologia.Library.controller.ClientController;
@@ -17,7 +17,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static br.com.phoebustecnologia.Library.clientTest.ClientTest.createClient;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -47,13 +46,13 @@ public class ClientControllerTest {
 
 
     }
-
+/*
     @Test
     @DisplayName("Find All client")
     void findListAllClient() throws Exception {
         when(clientServices.findClientAll())
                 .thenReturn(Lists.newArrayList(
-                        createClient().id(1L).name("test1").sex(SexClient.MASCULINE).phone("5415-6515").email("emailteste@test.com").build()
+                        ClientTest.createClient().id(1L).name("test1").sex(SexClient.MASCULINE).phone("5415-6515").email("emailteste@test.com").build()
                 ));
 
 
@@ -75,7 +74,7 @@ public class ClientControllerTest {
     @DisplayName("Find Client by id")
     void findClientById() throws Exception{
         when(clientServices.clientsByID(1L))
-                .thenReturn(createClient()
+                .thenReturn(ClientTest.createClient()
                         .id(1L)
                         .name("test1")
                         .phone("5415-6515")
@@ -93,12 +92,12 @@ public class ClientControllerTest {
                 .andExpect(jsonPath("$.age", is(23)))
                 .andExpect(jsonPath("$.email", is("emailteste@test.com"))
                 );
-        verify(clientServices, times(1)).clientsByID(anyLong());
+        verify(clientServices, times(1)).findById(anyLong());
 
     }
 
 
-   /* @BeforeEach
+    @BeforeEach
     public void setup(){
         standaloneSetup(this.clientController);
     }

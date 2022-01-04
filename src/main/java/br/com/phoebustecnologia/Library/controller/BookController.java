@@ -27,7 +27,7 @@ public class BookController {
         return BookDTO.ListFromAllBooks(bookServices.findAll());
     }
 
-    @ApiOperation("Get a bo1ok")
+    @ApiOperation("Get a book")
     @GetMapping(value = "/{id}")
     public BookDTO bookListById(@PathVariable Long id) {
         return BookDTO.bookDTO(bookServices.findById(id));

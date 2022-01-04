@@ -17,29 +17,29 @@ public class ClientController {
 
     @GetMapping(value = "/all")
     public List<ClientDTO> ClientList() {
-        return ClientDTO.ListFromAllClients(clientServices.findClientAll());
+        return ClientDTO.ListFromAllClients(clientServices.findAll());
 
     }
 
     @GetMapping(value = "/{id}")
     public ClientDTO ClientList(@PathVariable Long id) {
-        return ClientDTO.clientDTO(clientServices.clientsByID(id));
+        return ClientDTO.clientDTO(clientServices.findById(id));
 
     }
     @PostMapping
     public void addClient(@RequestBody ClientDTO client) {
-        clientServices.saveClient(Client.clientFrom(client));
+        clientServices.save(Client.clientFrom(client));
     }
 
     @DeleteMapping(value = "/{id}")
     public void deleteClient(@PathVariable Long id) {
-        clientServices.deleteClient(id);
+        clientServices.delete(id);
 
     }
 
     @PutMapping(value = "/{id}")
     public void updateClient(@RequestBody ClientDTO client, @PathVariable Long id) {
         client.setId(id);
-        clientServices.updateClient(Client.clientFrom(client));
+        clientServices.update(Client.clientFrom(client));
     }
 }

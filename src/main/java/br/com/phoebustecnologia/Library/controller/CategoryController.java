@@ -28,21 +28,21 @@ public class CategoryController {
     @ApiOperation("Find an category by ID")
     @GetMapping(value = "/{id}")
     public CategoryDTO findCategoryByID(@PathVariable Long id){
-        return CategoryDTO.categoryDTO(categoryServices.categoryById(id));
+        return CategoryDTO.categoryDTO(categoryServices.findById(id));
 
     }
 
     @ApiOperation("Save an category")
     @PostMapping
     public void addCategory(@RequestBody CategoryDTO category) {
-        categoryServices.saveCategory(Category.categoryFrom(category)) ;
+        categoryServices.save(Category.categoryFrom(category)) ;
 
     }
 
     @ApiOperation("Delete on category")
     @DeleteMapping(value = "/{id}")
     public void  deleteCategory(@PathVariable Long id) {
-        categoryServices.deleteCategory(id);
+        categoryServices.delete(id);
 
     }
 
@@ -50,7 +50,7 @@ public class CategoryController {
     @PutMapping(value = "/{id}")
     public void updateCategory(@RequestBody CategoryDTO category, @PathVariable Long id) {
         category.setId(id);
-        categoryServices.updateCategory(Category.categoryFrom(category));
+        categoryServices.update(Category.categoryFrom(category));
 
     }
 }

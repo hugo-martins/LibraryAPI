@@ -23,12 +23,12 @@ public class CategoryServices  {
     }
 
     //Pesquisar Categoria por ID
-    public Category categoryById(Long id) {
+    public Category findById(Long id) {
         return  categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
     }
 
     //Deletar categoria
-    public void deleteCategory(Long id){
+    public void delete(Long id){
         if(!categoryRepository.existsById(id)){
             throw new CategoryNotFoundException();
         }
@@ -36,16 +36,16 @@ public class CategoryServices  {
     }
 
     //Salvar categoria
-    public Category saveCategory(Category category){
+    public Category save(Category category){
         return categoryRepository.save(category);
     }
 
     //Atualizar livro
-    public Category updateCategory(Category category){
+    public Category update(Category category){
         if(!categoryRepository.existsById(category.getId())){
             throw new CategoryNotFoundException();
         }
-        Category obj = categoryById(category.getId());
+        Category obj = findById(category.getId());
         updateValues(obj, category);
         return categoryRepository.save(obj);
     }
