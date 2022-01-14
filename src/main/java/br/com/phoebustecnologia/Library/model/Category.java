@@ -35,5 +35,4 @@ public class Category implements Serializable {
                 .name(categoryDTO.getName())
                 .build();
     }
-
 }

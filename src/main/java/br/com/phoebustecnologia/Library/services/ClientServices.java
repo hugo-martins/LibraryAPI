@@ -1,11 +1,9 @@
 package br.com.phoebustecnologia.Library.services;
 
 import br.com.phoebustecnologia.Library.Repositories.ClientRepository;
-import br.com.phoebustecnologia.Library.exceptions.BookNotFoundException;
+import br.com.phoebustecnologia.Library.dto.ClientDTO;
 import br.com.phoebustecnologia.Library.exceptions.ClientExistException;
 import br.com.phoebustecnologia.Library.exceptions.ClientNotFoundException;
-import br.com.phoebustecnologia.Library.model.Book;
-import br.com.phoebustecnologia.Library.model.Client;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,21 +18,21 @@ public class ClientServices {
 
 
     //Pesquisar lista de clientes
-    public List<Client> findAll() {
-        return clientRepository.findAll();
+    public List<ClientDTO> findAll() {
+        return ClientDTO.ListFromAllClients(clientRepository.findAll());
     }
 
     //Pesquisar cliente por ID;
-    public Client findById(Long id) {
-        return clientRepository.findById(id).orElseThrow(ClientNotFoundException::new);
+    public ClientDTO findById(Long id) throws Throwable{
+        return (ClientDTO) clientRepository.findById(id).orElseThrow(ClientNotFoundException::new);
     }
 
     //Salvar Cliente
-    public Client save(Client client) {
-        if(client.getId()!=null){
+    public ClientDTO save(ClientDTO clientDTO) {
+        if(clientDTO.getId()!=null){
             throw new ClientExistException();
         }
-        return clientRepository.save(client);
+        return clientRepository.save(clientDTO);
     }
 
     //Deletar cliente
@@ -46,20 +44,19 @@ public class ClientServices {
     }
 
     //Atualizar cliente
-    public Client update(@NotNull Client client) {
+    public ClientDTO update(@NotNull ClientDTO client) throws Throwable{
         if (!clientRepository.existsById(client.getId())) {
             throw new ClientNotFoundException();
         }
-        Client obj = findById(client.getId());
+        ClientDTO obj = findById(client.getId());
         updateValuesClient(obj, client);
-        clientRepository.save(obj);
+        return clientRepository.save(obj);
 
-        return obj;
     }
 
 
     //Método para salvar e atualizar entidades dos clientes
-    public void updateValuesClient(Client newObj, Client oldObj) {
+    public void updateValuesClient(ClientDTO newObj, ClientDTO oldObj) {
         newObj.setName(oldObj.getName());
         newObj.setEmail(oldObj.getEmail());
         newObj.setPhone(oldObj.getPhone());

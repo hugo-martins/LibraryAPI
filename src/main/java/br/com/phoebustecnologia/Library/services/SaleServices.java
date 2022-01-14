@@ -1,9 +1,8 @@
 package br.com.phoebustecnologia.Library.services;
 
 import br.com.phoebustecnologia.Library.Repositories.SaleRepository;
-import br.com.phoebustecnologia.Library.exceptions.ClientExistException;
+import br.com.phoebustecnologia.Library.dto.SaleDTO;
 import br.com.phoebustecnologia.Library.exceptions.SaleNotFoundException;
-import br.com.phoebustecnologia.Library.model.Sale;
 import br.com.phoebustecnologia.Library.model.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,22 +17,22 @@ public class SaleServices {
 
 
     //Pesquisar lista de Compras pelo Status
-    public List<Sale> findByStatus(Status status){
+    public List<SaleDTO> findByStatus(Status status){
         return saleRepository.findByStatus(status);
     }
 
     //Pesquisar lista de Compras
-    public List<Sale> findAll(){
-        return saleRepository.findAll();
+    public List<SaleDTO> findAll(){
+        return SaleDTO.ListFromAllSales(saleRepository.findAll());
     }
 
     //Pesquisar compra por ID;
-    public Sale findById(Long id){
-        return saleRepository.findById(id).orElseThrow(SaleNotFoundException::new);
+    public SaleDTO findById(Long id) throws Throwable{
+        return (SaleDTO) saleRepository.findById(id).orElseThrow(SaleNotFoundException::new);
     }
 
     //Salvar venda
-    public Sale save(Sale sale){
+    public SaleDTO save(SaleDTO sale){
         if(sale.getId()!=null){
             throw new SaleNotFoundException();
         }
@@ -48,20 +47,19 @@ public class SaleServices {
         saleRepository.deleteById(id);
     }
 
-    //Atualizar Sale
-    public Sale update(Sale sale){
-        if(!saleRepository.existsById(sale.getId())){
+    //Atualizar venda
+    public SaleDTO update(SaleDTO saleDTO) throws Throwable{
+        if(!saleRepository.existsById(saleDTO.getId())){
             throw new SaleNotFoundException();
         }
-        Sale obj = findById(sale.getId());
-        updateValuesSale(obj, sale);
+        SaleDTO obj = findById(saleDTO.getId());
+        updateValuesSale(obj, saleDTO);
         saleRepository.save(obj);
-
         return obj;
     }
 
     //Método para salvar e atualizar entidades das vendas
-    public void updateValuesSale(Sale newObj, Sale oldObj){
+    public void updateValuesSale(SaleDTO newObj, SaleDTO oldObj){
         newObj.setClient(oldObj.getClient());
         newObj.setBookPurchase(oldObj.getBookPurchase());
         newObj.setValuePurchase(oldObj.getValuePurchase());

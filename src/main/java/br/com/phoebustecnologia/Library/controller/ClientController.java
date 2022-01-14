@@ -1,8 +1,8 @@
 package br.com.phoebustecnologia.Library.controller;
 
 import br.com.phoebustecnologia.Library.dto.ClientDTO;
-import br.com.phoebustecnologia.Library.model.Client;
 import br.com.phoebustecnologia.Library.services.ClientServices;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,18 +17,18 @@ public class ClientController {
 
     @GetMapping(value = "/all")
     public List<ClientDTO> ClientList() {
-        return ClientDTO.ListFromAllClients(clientServices.findAll());
+        return clientServices.findAll();
 
     }
 
     @GetMapping(value = "/{id}")
-    public ClientDTO ClientList(@PathVariable Long id) {
-        return ClientDTO.clientDTO(clientServices.findById(id));
+    public ClientDTO ClientList(@PathVariable Long id) throws Throwable {
+        return clientServices.findById(id);
 
     }
     @PostMapping
     public void addClient(@RequestBody ClientDTO client) {
-        clientServices.save(Client.clientFrom(client));
+        clientServices.save(client);
     }
 
     @DeleteMapping(value = "/{id}")
@@ -38,8 +38,8 @@ public class ClientController {
     }
 
     @PutMapping(value = "/{id}")
-    public void updateClient(@RequestBody ClientDTO client, @PathVariable Long id) {
+    public void updateClient(@RequestBody @NotNull ClientDTO client, @PathVariable Long id) throws Throwable {
         client.setId(id);
-        clientServices.update(Client.clientFrom(client));
+        clientServices.update(client);
     }
 }

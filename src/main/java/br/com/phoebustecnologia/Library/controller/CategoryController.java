@@ -1,10 +1,10 @@
 package br.com.phoebustecnologia.Library.controller;
 
 import br.com.phoebustecnologia.Library.dto.CategoryDTO;
-import br.com.phoebustecnologia.Library.model.Category;
 import br.com.phoebustecnologia.Library.services.CategoryServices;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,20 +22,20 @@ public class CategoryController {
     @ApiOperation("List of category")
     @GetMapping(value = "/all")
     public List<CategoryDTO> categoryList() {
-        return CategoryDTO.categoriesAll(categoryServices.findAll());
+        return categoryServices.findAll();
     }
 
     @ApiOperation("Find an category by ID")
     @GetMapping(value = "/{id}")
-    public CategoryDTO findCategoryByID(@PathVariable Long id){
-        return CategoryDTO.categoryDTO(categoryServices.findById(id));
+    public CategoryDTO findCategoryByID(@PathVariable Long id) throws Throwable {
+        return categoryServices.findById(id);
 
     }
 
     @ApiOperation("Save an category")
     @PostMapping
     public void addCategory(@RequestBody CategoryDTO category) {
-        categoryServices.save(Category.categoryFrom(category)) ;
+        categoryServices.save(category) ;
 
     }
 
@@ -48,9 +48,9 @@ public class CategoryController {
 
     @ApiOperation("Update on category")
     @PutMapping(value = "/{id}")
-    public void updateCategory(@RequestBody CategoryDTO category, @PathVariable Long id) {
-        category.setId(id);
-        categoryServices.update(Category.categoryFrom(category));
+    public void updateCategory(@RequestBody @NotNull CategoryDTO categoryDTO, @PathVariable Long id) throws Throwable {
+        categoryDTO.setId(id);
+        categoryServices.update(categoryDTO);
 
     }
 }

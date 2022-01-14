@@ -1,6 +1,7 @@
 package br.com.phoebustecnologia.Library.dto;
 
 import br.com.phoebustecnologia.Library.model.Book;
+import br.com.phoebustecnologia.Library.model.Category;
 import br.com.phoebustecnologia.Library.model.Client;
 import br.com.phoebustecnologia.Library.model.SexClient;
 import lombok.*;

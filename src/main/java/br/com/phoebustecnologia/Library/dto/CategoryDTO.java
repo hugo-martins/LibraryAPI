@@ -32,4 +32,8 @@ public class CategoryDTO implements Serializable {
     public static List<CategoryDTO> categoriesAll(List<Category> categories) {
         return categories.stream().map(CategoryDTO::categoryDTO).collect(Collectors.toList());
     }
+
+    public Category transformToObjetClient(){
+        return new Category(id, name);
+    }
 }

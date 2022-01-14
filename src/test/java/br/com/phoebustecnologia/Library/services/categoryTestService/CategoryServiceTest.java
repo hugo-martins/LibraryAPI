@@ -1,6 +1,7 @@
 package br.com.phoebustecnologia.Library.services.categoryTestService;
 
 import br.com.phoebustecnologia.Library.Repositories.CategoryRepository;
+import br.com.phoebustecnologia.Library.dto.CategoryDTO;
 import br.com.phoebustecnologia.Library.model.Category;
 import br.com.phoebustecnologia.Library.services.CategoryServices;
 import org.hamcrest.Matchers;
@@ -39,7 +40,6 @@ public class CategoryServiceTest {
     void setUp() {
     }
 
-
     @Test
     @DisplayName("Should return all categories")
     void ShouldFindAllBCategories() {
@@ -56,22 +56,18 @@ public class CategoryServiceTest {
                 () -> assertThat(categoryList.size(), is(2)),
                 () -> assertThat(categoryList.get(0).getName(), is("category")),
                 () -> assertThat(categoryList.get(1).getName(), is("category2"))
-
-
         );
-
     }
-
 
     @Test
     @DisplayName("Should return category by Id")
-    void ShouldFindById() {
+    void ShouldFindById() throws Throwable {
 
         Long id = anyLong();
 
-        Optional<Category> categoryCreated = Optional.of(CategoryTestBuilder.createdCategory().build());
+        Optional<CategoryDTO> categoryCreated = Optional.of(CategoryTestBuilder.createdCategoryDTO().build());
         when(categoryRepository.findById(id)).thenReturn(categoryCreated);
-        Category categorySaved = categoryServices.findById(id);
+        CategoryDTO categorySaved = categoryServices.findById(id);
 
         assertAll("Category",
                 () -> assertThat(categorySaved.getName(), is("category"))
@@ -83,15 +79,14 @@ public class CategoryServiceTest {
     @Test
     @DisplayName("Should save a category")
     void ShouldSaveBook() {
-        Category mock = CategoryTestBuilder.createdCategory().build();
+        CategoryDTO mock = CategoryTestBuilder.createdCategoryDTO().build();
         when(categoryRepository.save(mock)).thenReturn(mock);
-        Category category = categoryServices.save(mock);
+        CategoryDTO category = categoryServices.save(mock);
 
 
         assertAll("Category",
                 () -> assertThat(category.getName(), is("category"))
         );
-
     }
 
     @Test
@@ -105,20 +100,20 @@ public class CategoryServiceTest {
 
     @Test
     @DisplayName("Should updated categories to List")
-    void update_whenSuccessful() {
+    void update_whenSuccessful() throws Throwable {
 
-        Category category = CategoryTestBuilder.createdCategory().id(1L).build();
+        CategoryDTO category = CategoryTestBuilder.createdCategoryDTO().id(1L).build();
 
-        Optional<Category> categoryOpt = Optional.of(category);
+        Optional<CategoryDTO> categoryOpt = Optional.of(category);
 
         when(categoryRepository.existsById(1L)).thenReturn(true);
         when(categoryRepository.findById(anyLong())).thenReturn(categoryOpt);
 
         category.setName("Romance");
 
-        when(categoryRepository.save(category)).thenReturn(category);
+        when(categoryServices.save(category)).thenReturn(category);
 
-        Category categoryResult = categoryServices.update(category);
+        CategoryDTO categoryResult = categoryServices.update(category);
 
         assertAll("Category",
                 () -> assertThat(categoryResult.getName(), Matchers.is("Romance"))

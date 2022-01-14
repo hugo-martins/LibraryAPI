@@ -1,5 +1,6 @@
 package br.com.phoebustecnologia.Library.Repositories;
 
+import br.com.phoebustecnologia.Library.dto.BookDTO;
 import br.com.phoebustecnologia.Library.model.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -7,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
@@ -19,5 +21,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "WHERE C.ID = :idCat", nativeQuery = true)
     List<Book> findByCategoryId(@Param(value = "idCat") Long idCat);
 
+    Optional findById(Long id);
 
+    BookDTO save(BookDTO bookDTO);
 }

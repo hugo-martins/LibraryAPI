@@ -1,6 +1,7 @@
 package br.com.phoebustecnologia.Library.services.bookTestService;
 
 import br.com.phoebustecnologia.Library.Repositories.BookRepository;
+import br.com.phoebustecnologia.Library.dto.BookDTO;
 import br.com.phoebustecnologia.Library.model.Book;
 import br.com.phoebustecnologia.Library.services.BookServices;
 import org.hamcrest.Matchers;
@@ -64,32 +65,31 @@ class BookServicesTest {
     @Test
     @DisplayName("Should return book by Category")
     void ShouldFindByCategoryId() {
-        when(bookRepository.findAll()).thenReturn(
-                Stream.of(BookTestBuilder.createdBook().title("bookTest1").build(),
-                        BookTestBuilder.createdBook().title("bookTest2").build()).collect(Collectors.toList())
+        when(bookRepository.findByCategoryId(1L)).thenReturn(
+                Stream.of(BookTestBuilder.createdBook().id(1L).title("bookTest1").build())
+                        .collect(Collectors.toList())
         );
 
-        List<Book> bookList = bookRepository.findAll();
+        List<BookDTO> bookList = bookServices.findByCategoryId(1L);
 
         assertAll("Books",
-                () -> assertThat(bookList.size(), is(2)),
+                () -> assertThat(bookList.size(), is(1)),
                 () -> assertThat(bookList.get(0).getTitle(), is("bookTest1")),
-                () -> assertThat(bookList.get(0).getAuthor(), is("Author")),
-                () -> assertThat(bookList.get(1).getTitle(), is("bookTest2")),
-                () -> assertThat(bookList.get(1).getAuthor(), is("Author"))
+                () -> assertThat(bookList.get(0).getAuthor(), is("Author"))
+
 
         );
     }
 
     @Test
     @DisplayName("Should return book by Id")
-    void ShouldFindById() {
+    void ShouldFindById() throws Throwable {
 
         Long id = anyLong();
 
-        Optional<Book> bookCreated = Optional.of(BookTestBuilder.createdBook().build());
+        Optional<BookDTO> bookCreated = Optional.of(BookTestBuilder.createdBookDTO().build());
         when(bookRepository.findById(id)).thenReturn(bookCreated);
-        Book bookSalved = bookServices.findById(id);
+        BookDTO bookSalved = bookServices.findById(id);
 
         assertAll("Book",
                 () -> assertThat(bookSalved.getTitle(), is("Título")),
@@ -105,9 +105,9 @@ class BookServicesTest {
     @Test
     @DisplayName("Should save a book")
     void ShouldSaveBook() {
-        Book mock = BookTestBuilder.createdBook().build();
+        BookDTO mock = BookTestBuilder.createdBookDTO().build();
         when(bookRepository.save(mock)).thenReturn(mock);
-        Book book = bookServices.save(mock);
+        BookDTO book = bookServices.save(mock);
 
 
         assertAll("Book",
@@ -133,11 +133,11 @@ class BookServicesTest {
 
     @Test
     @DisplayName("Should updated books to List")
-    void update_whenSuccessful() {
+    void update_whenSuccessful() throws Throwable {
 
-        Book book = BookTestBuilder.createdBook().id(2L).build();
+        BookDTO book = BookTestBuilder.createdBookDTO().id(2L).build();
 
-        Optional<Book> OBook = Optional.of(book);
+        Optional<BookDTO> OBook = Optional.of(book);
 
         when(bookRepository.existsById(2L)).thenReturn(true);
         when(bookRepository.findById(anyLong())).thenReturn(OBook);
@@ -146,7 +146,7 @@ class BookServicesTest {
 
         when(bookRepository.save(book)).thenReturn(book);
 
-        Book bookResult = bookServices.update(book);
+        BookDTO bookResult = bookServices.update(book);
 
         assertAll("Book",
                 () -> assertThat(bookResult.getTitle(), Matchers.is("Development")));

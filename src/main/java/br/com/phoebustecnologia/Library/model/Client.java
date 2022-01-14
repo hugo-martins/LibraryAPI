@@ -34,6 +34,9 @@ public class Client implements Serializable {
     @Enumerated(EnumType.STRING)
     private SexClient sex;
 
+    public Client(Long id, String name, Integer age, SexClient sex) {
+    }
+
     public static Client clientFrom (ClientDTO dto){
         return builder()
                 .id(dto.getId())

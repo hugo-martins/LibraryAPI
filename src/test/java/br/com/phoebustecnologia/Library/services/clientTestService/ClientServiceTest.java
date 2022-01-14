@@ -2,6 +2,7 @@ package br.com.phoebustecnologia.Library.services.clientTestService;
 
 
 import br.com.phoebustecnologia.Library.Repositories.ClientRepository;
+import br.com.phoebustecnologia.Library.dto.ClientDTO;
 import br.com.phoebustecnologia.Library.model.Client;
 import br.com.phoebustecnologia.Library.model.SexClient;
 import br.com.phoebustecnologia.Library.services.ClientServices;
@@ -65,13 +66,13 @@ public class ClientServiceTest {
 
     @Test
     @DisplayName("Should return client by Id")
-    void ShouldFindByClientId() {
+    void ShouldFindByClientId() throws Throwable {
 
         Long id = anyLong();
 
-        Optional<Client> clientCreated = Optional.of(ClientTestBuilder.createClient().build());
+        Optional<ClientDTO> clientCreated = Optional.of(ClientTestBuilder.createClientDTO().build());
         when(clientRepository.findById(id)).thenReturn(clientCreated);
-        Client clientSaved = clientServices.findById(id);
+        ClientDTO clientSaved = clientServices.findById(id);
 
         assertAll("Client",
                 () -> assertThat(clientSaved.getName(), is("clientTest")),
@@ -85,9 +86,9 @@ public class ClientServiceTest {
     @Test
     @DisplayName("Should save a client")
     void ShouldSaveClient() {
-        Client mock = ClientTestBuilder.createClient().build();
-        when(clientRepository.save(mock)).thenReturn(mock);
-        Client client = clientServices.save(mock);
+        ClientDTO mock = ClientTestBuilder.createClientDTO().build();
+        when(clientServices.save(mock)).thenReturn(mock);
+        ClientDTO client = clientServices.save(mock);
 
         assertAll("Client",
                 () -> assertThat(client.getName(), is("clientTest")),
@@ -110,20 +111,20 @@ public class ClientServiceTest {
 
     @Test
     @DisplayName("Should updated clients to List")
-    void update_whenSuccessful() {
+    void update_whenSuccessful() throws Throwable {
 
-        Client client = ClientTestBuilder.createClient().id(1L).build();
+        ClientDTO clientDTO = ClientTestBuilder.createClientDTO().id(1L).build();
 
-        Optional<Client> clientOpt = Optional.of(client);
+        Optional<ClientDTO> clientOpt = Optional.of(clientDTO);
 
         when(clientRepository.existsById(1L)).thenReturn(true);
         when(clientRepository.findById(anyLong())).thenReturn(clientOpt);
 
-        client.setName("client1");
+        clientDTO.setName("client1");
 
-        when(clientRepository.save(client)).thenReturn(client);
+        when(clientRepository.save(clientDTO)).thenReturn(clientDTO);
 
-        Client clientResult = clientServices.update(client);
+        ClientDTO clientResult = clientServices.update(clientDTO);
 
         assertAll("Client",
                 () -> assertThat(clientResult.getName(), Matchers.is("client1")));

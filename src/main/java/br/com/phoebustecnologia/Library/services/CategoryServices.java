@@ -2,8 +2,11 @@ package br.com.phoebustecnologia.Library.services;
 
 import br.com.phoebustecnologia.Library.Repositories.CategoryRepository;
 import br.com.phoebustecnologia.Library.dto.CategoryDTO;
+import br.com.phoebustecnologia.Library.exceptions.CategoryExistException;
 import br.com.phoebustecnologia.Library.exceptions.CategoryNotFoundException;
+import br.com.phoebustecnologia.Library.exceptions.ClientExistException;
 import br.com.phoebustecnologia.Library.model.Category;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +19,17 @@ public class CategoryServices  {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    //Listar categoria
-    public List<Category> findAll(){
-        return categoryRepository.findAll();
 
+
+    //Listar categoria
+    public List<CategoryDTO> findAll(){
+        return CategoryDTO.categoriesAll(categoryRepository.findAll());
     }
 
+
     //Pesquisar Categoria por ID
-    public Category findById(Long id) {
-        return  categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
+    public CategoryDTO findById(Long id) throws Throwable {
+        return (CategoryDTO) categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
     }
 
     //Deletar categoria
@@ -36,19 +41,27 @@ public class CategoryServices  {
     }
 
     //Salvar categoria
-    public Category save(Category category){
-        return categoryRepository.save(category);
+    public CategoryDTO save(CategoryDTO category){
+        if(category.getId()!=null){
+            throw new CategoryExistException();
+        }
+        return  categoryRepository.save(category);
     }
 
+
     //Atualizar livro
-    public Category update(Category category){
+    public CategoryDTO update(CategoryDTO category) throws Throwable {
         if(!categoryRepository.existsById(category.getId())){
             throw new CategoryNotFoundException();
         }
-        Category obj = findById(category.getId());
+        CategoryDTO obj = findById(category.getId());
         updateValues(obj, category);
-        return categoryRepository.save(obj);
+        categoryRepository.save(obj);
+        return obj;
     }
 
-    public void updateValues(Category newObj, Category oldObj){newObj.setName(oldObj.getName());}
+    public void updateValues(@NotNull CategoryDTO newObj, CategoryDTO oldObj){
+        newObj.setName(oldObj.getName());
+    }
+
 }

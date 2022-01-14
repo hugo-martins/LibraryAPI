@@ -1,9 +1,9 @@
 package br.com.phoebustecnologia.Library.services;
 
 import br.com.phoebustecnologia.Library.Repositories.BookRepository;
+import br.com.phoebustecnologia.Library.dto.BookDTO;
 import br.com.phoebustecnologia.Library.exceptions.BookExistException;
 import br.com.phoebustecnologia.Library.exceptions.BookNotFoundException;
-import br.com.phoebustecnologia.Library.model.Book;
 import br.com.phoebustecnologia.Library.model.Category;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,31 +22,32 @@ public class BookServices  {
     BookRepository bookRepository;
 
     //Listar todos os livros
-    public List<Book> findAll(){
-        return bookRepository.findAll();
+    public List<BookDTO> findAll() {
+        return BookDTO.ListFromAllBooks(bookRepository.findAll());
     }
 
+
     //Pesquisar lista de livros
-    public List<Book> findByCategoryId(Long idCat){
-        return bookRepository.findByCategoryId(idCat);
+    public List<BookDTO> findByCategoryId(Long idCat){
+        return BookDTO.ListFromAllBooks(bookRepository.findByCategoryId(idCat));
     }
 
     //Pesquisar livro por ID;
-    public Book findById(Long id){
-        return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
+    //Correção para retorno de um book DTO
+    public BookDTO findById(Long id) throws Throwable {
+        return (BookDTO) bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
 
     }
 
     //Salvar Livro
-    public Book save(Book book){
+    public BookDTO save(BookDTO book){
         if(book.getId()!=null) {
             throw new BookExistException();
-
         }
         Set<Category> categorySet = new HashSet<>(book.getCategories());
         book.setCategories(categorySet);
-        Book b = bookRepository.save(book);
-        return  b;
+        return bookRepository.save(book);
+
 
     }
 
@@ -59,19 +60,18 @@ public class BookServices  {
     }
 
     //Atualizar Livro
-    public Book update(@NotNull Book book){
+    public BookDTO update(@NotNull BookDTO book) throws Throwable{
         if(!bookRepository.existsById(book.getId())){
             throw new BookNotFoundException();
         }
-        Book obj = findById(book.getId());
+        BookDTO obj = findById(book.getId());
         updateValuesBook(obj, book);
         bookRepository.save(obj);
-
         return obj;
     }
 
     //Método para salvar e atualizar entidades dos livros
-    public void updateValuesBook(Book newObj, Book oldObj){
+    public void updateValuesBook(BookDTO newObj, BookDTO oldObj){
         newObj.setCategories(oldObj.getCategories());
         newObj.setTitle(oldObj.getTitle());
         newObj.setIsbn(oldObj.getIsbn());

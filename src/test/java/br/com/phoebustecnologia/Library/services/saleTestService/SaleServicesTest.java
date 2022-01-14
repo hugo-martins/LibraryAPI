@@ -2,6 +2,7 @@ package br.com.phoebustecnologia.Library.services.saleTestService;
 
 import br.com.phoebustecnologia.Library.Repositories.BookRepository;
 import br.com.phoebustecnologia.Library.Repositories.SaleRepository;
+import br.com.phoebustecnologia.Library.dto.SaleDTO;
 import br.com.phoebustecnologia.Library.model.Book;
 import br.com.phoebustecnologia.Library.model.Sale;
 import br.com.phoebustecnologia.Library.model.SexClient;
@@ -78,13 +79,13 @@ class SaleServicesTest {
 
     @Test
     @DisplayName("Should return one sale")
-    void ShouldFindById() {
+    void ShouldFindById() throws Throwable {
 
         Long id = anyLong();
 
-        Optional<Sale> saleCreated = Optional.of(SaleTestBuilder.createdSale().build());
+        Optional<SaleDTO> saleCreated = Optional.of(SaleTestBuilder.createdSaleDTO().build());
         when(saleRepository.findById(id)).thenReturn(saleCreated);
-        Sale saleSaved = saleServices.findById(id);
+        SaleDTO saleSaved = saleServices.findById(id);
 
         assertAll("Sale",
                 () -> assertThat(saleSaved.getClient().getName(), is("clientTest")),
@@ -99,9 +100,9 @@ class SaleServicesTest {
     @Test
     @DisplayName("Should save a Sale")
     void ShouldSaveSale() {
-        Sale mock = SaleTestBuilder.createdSale().build();
+        SaleDTO mock = SaleTestBuilder.createdSaleDTO().build();
         when(saleRepository.save(mock)).thenReturn(mock);
-        Sale sale = saleServices.save(mock);
+        SaleDTO sale = saleServices.save(mock);
 
 
         assertAll("Sale",
@@ -127,20 +128,20 @@ class SaleServicesTest {
 
     @Test
     @DisplayName("Should updated sale to List")
-    void update_whenSuccessful() {
+    void update_whenSuccessful() throws Throwable{
 
-        Sale sale = SaleTestBuilder.createdSale().id(1L).build();
+        SaleDTO saleDTO = SaleTestBuilder.createdSaleDTO().id(1L).build();
 
-        Optional<Sale> saleOpt = Optional.of(sale);
+        Optional<SaleDTO> saleOpt = Optional.of(saleDTO);
 
         when(saleRepository.existsById(1L)).thenReturn(true);
         when(saleRepository.findById(anyLong())).thenReturn(saleOpt);
 
-        sale.setStatus(Status.PENDING);
+        saleDTO.setStatus(Status.PENDING);
 
-        when(saleRepository.save(sale)).thenReturn(sale);
+        when(saleRepository.save(saleDTO)).thenReturn(saleDTO);
 
-        Sale saleResult = saleServices.update(sale);
+        SaleDTO saleResult = saleServices.update(saleDTO);
 
         assertAll("Sale",
                 () -> assertThat(saleResult.getStatus(), Matchers.is(Status.PENDING)));

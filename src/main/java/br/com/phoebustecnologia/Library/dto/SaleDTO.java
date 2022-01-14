@@ -12,7 +12,9 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -43,13 +45,17 @@ public class SaleDTO  implements Serializable {
     private Status status;
 
 
-    public SaleDTO saleDTO (Sale saleEntity){
+    public static SaleDTO saleDTO(Sale saleEntity){
         return builder()
                 .client(saleEntity.getClient())
                 .bookPurchase(saleEntity.getBookPurchase())
                 .valuePurchase(saleEntity.getValuePurchase())
                 .datePurchase(saleEntity.getDatePurchase())
                 .build();
+    }
+
+    public static List<SaleDTO> ListFromAllSales (List<Sale> sales) {
+        return sales.stream().map(SaleDTO::saleDTO).collect(Collectors.toList());
     }
 
 }
