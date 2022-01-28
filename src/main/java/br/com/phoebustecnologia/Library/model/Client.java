@@ -1,10 +1,9 @@
 package br.com.phoebustecnologia.Library.model;
 
-import br.com.phoebustecnologia.Library.dto.ClientDTO;
+import br.com.phoebustecnologia.Library.dto.ClientDTO.ClientDTO;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
@@ -40,6 +39,15 @@ public class Client implements Serializable {
     public static Client clientFrom (ClientDTO dto){
         return builder()
                 .id(dto.getId())
+                .name(dto.getName())
+                .phone(dto.getPhone())
+                .email(dto.getEmail())
+                .age(dto.getAge())
+                .sex(dto.getSex())
+                .build();
+    }
+    public static Client clientSaved (ClientDTO dto){
+        return builder()
                 .name(dto.getName())
                 .phone(dto.getPhone())
                 .email(dto.getEmail())

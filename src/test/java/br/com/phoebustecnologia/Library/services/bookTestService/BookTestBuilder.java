@@ -1,11 +1,8 @@
 package br.com.phoebustecnologia.Library.services.bookTestService;
 
 
-import br.com.phoebustecnologia.Library.dto.BookDTO;
-import br.com.phoebustecnologia.Library.dto.CategoryDTO;
 import br.com.phoebustecnologia.Library.model.Book;
 import br.com.phoebustecnologia.Library.model.Category;
-import br.com.phoebustecnologia.Library.model.Client;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -28,6 +25,7 @@ public class BookTestBuilder {
                 .categories(newCategory);
 
     }
+    /*
     public static BookDTO.Builder createdBookDTO(){
         CategoryDTO test1 = new CategoryDTO(1L,"Nome categoria");
         Set<Category> newCategory = new HashSet<>();
@@ -43,4 +41,6 @@ public class BookTestBuilder {
                 .categories(newCategory);
 
     }
+    */
+
 }

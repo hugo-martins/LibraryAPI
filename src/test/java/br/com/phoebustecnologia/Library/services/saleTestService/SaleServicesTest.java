@@ -1,25 +1,21 @@
 package br.com.phoebustecnologia.Library.services.saleTestService;
 
-import br.com.phoebustecnologia.Library.Repositories.BookRepository;
 import br.com.phoebustecnologia.Library.Repositories.SaleRepository;
-import br.com.phoebustecnologia.Library.dto.SaleDTO;
-import br.com.phoebustecnologia.Library.model.Book;
+import br.com.phoebustecnologia.Library.dto.SaleDTO.SaleDTO;
 import br.com.phoebustecnologia.Library.model.Sale;
 import br.com.phoebustecnologia.Library.model.SexClient;
 import br.com.phoebustecnologia.Library.model.Status;
-import br.com.phoebustecnologia.Library.services.BookServices;
-import br.com.phoebustecnologia.Library.services.SaleServices;
-import br.com.phoebustecnologia.Library.services.bookTestService.BookTestBuilder;
+import br.com.phoebustecnologia.Library.services.SaleServices.SaleServicesImpl;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,7 +24,8 @@ import java.util.stream.Stream;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test Sale Service")
@@ -38,14 +35,34 @@ class SaleServicesTest {
     private SaleRepository saleRepository;
 
     @InjectMocks
-    private SaleServices saleServices;
+    private SaleServicesImpl saleServicesImpl;
 
 
     @BeforeEach
     void setUp() {
+        this.saleServicesImpl = new SaleServicesImpl(saleRepository);
     }
 
 
+    @Test
+    @DisplayName("Should return Status sales COMPLETED")
+    void ShouldFindStatusSalesCompleted() {
+
+        when(saleRepository.findByStatus(Status.COMPLETED)).thenReturn(
+                Stream.of(SaleTestBuilder.createdSale().id(1L).status(Status.COMPLETED).build(),
+                                SaleTestBuilder.createdSale().id(2L).status(Status.COMPLETED).build())
+                        .collect(Collectors.toList())
+        );
+
+        List<SaleDTO> saleList = saleServicesImpl.findByStatus(Status.COMPLETED);
+
+        assertAll("Sales",
+                () -> assertThat(saleList.size(), is(2)),
+                () -> assertThat(saleList.get(0).getStatus(), is(Status.COMPLETED)),
+                () -> assertThat(saleList.get(1).getStatus(), is(Status.COMPLETED))
+        );
+
+    }
     @Test
     @DisplayName("Should return all sales")
     void ShouldFindAllSales() {
@@ -56,7 +73,7 @@ class SaleServicesTest {
                         .collect(Collectors.toList())
         );
 
-        List<Sale> saleList = saleRepository.findAll();
+        List<SaleDTO> saleList = saleServicesImpl.findAll();
 
         assertAll("Sales",
                 () -> assertThat(saleList.size(), is(2)),
@@ -76,16 +93,16 @@ class SaleServicesTest {
 
     }
 
-
     @Test
     @DisplayName("Should return one sale")
-    void ShouldFindById() throws Throwable {
+    void ShouldFindById(){
 
         Long id = anyLong();
 
-        Optional<SaleDTO> saleCreated = Optional.of(SaleTestBuilder.createdSaleDTO().build());
+        Optional<Sale> saleCreated = Optional.of(SaleTestBuilder.createdSale().build());
         when(saleRepository.findById(id)).thenReturn(saleCreated);
-        SaleDTO saleSaved = saleServices.findById(id);
+
+        SaleDTO saleSaved = saleServicesImpl.findById(id);
 
         assertAll("Sale",
                 () -> assertThat(saleSaved.getClient().getName(), is("clientTest")),
@@ -93,17 +110,18 @@ class SaleServicesTest {
                 () -> assertThat(saleSaved.getStatus(), is(Status.COMPLETED)),
                 () -> assertThat(saleSaved.getValuePurchase(), is(100.00)),
                 () -> assertThat(saleSaved.getBookPurchase().size(), is(2))
-                );
+        );
 
     }
 
     @Test
     @DisplayName("Should save a Sale")
     void ShouldSaveSale() {
-        SaleDTO mock = SaleTestBuilder.createdSaleDTO().build();
-        when(saleRepository.save(mock)).thenReturn(mock);
-        SaleDTO sale = saleServices.save(mock);
+        Sale saleSaved = SaleTestBuilder.createdSale().build();
+        when(saleRepository.save(ArgumentMatchers.any(Sale.class)))
+                .thenReturn(SaleTestBuilder.createdSale().build());
 
+        SaleDTO sale = saleServicesImpl.save(SaleDTO.saleDTO(saleSaved));
 
         assertAll("Sale",
                 () -> assertThat(sale.getClient().getName(), is("clientTest")),
@@ -111,7 +129,6 @@ class SaleServicesTest {
                 () -> assertThat(sale.getStatus(), is(Status.COMPLETED)),
                 () -> assertThat(sale.getValuePurchase(), is(100.00)),
                 () -> assertThat(sale.getBookPurchase().size(), is(2))
-
         );
 
 
@@ -121,27 +138,27 @@ class SaleServicesTest {
     @DisplayName("Should delete an Sale ")
     void ShouldDeleteSale() {
 
-        when(saleRepository.existsById(anyLong())).thenReturn(true);
-        saleServices.delete(1L);
-        verify(saleRepository).existsById(anyLong());
+        Long id = anyLong();
+        Optional<Sale> saleCreated = Optional.of(SaleTestBuilder.createdSale().build());
+        when(saleRepository.findById(id)).thenReturn(saleCreated);
+        saleServicesImpl.delete(1L);
     }
 
     @Test
     @DisplayName("Should updated sale to List")
-    void update_whenSuccessful() throws Throwable{
+    void update_whenSuccessful(){
 
-        SaleDTO saleDTO = SaleTestBuilder.createdSaleDTO().id(1L).build();
+        Sale saleToUpdate = SaleTestBuilder.createdSale().id(1L).build();
 
-        Optional<SaleDTO> saleOpt = Optional.of(saleDTO);
+        Optional<Sale> saleOpt = Optional.of(saleToUpdate);
 
-        when(saleRepository.existsById(1L)).thenReturn(true);
         when(saleRepository.findById(anyLong())).thenReturn(saleOpt);
 
-        saleDTO.setStatus(Status.PENDING);
+        saleToUpdate.setStatus(Status.PENDING);
 
-        when(saleRepository.save(saleDTO)).thenReturn(saleDTO);
+        when(saleRepository.save(ArgumentMatchers.any(Sale.class))).thenReturn(saleToUpdate);
 
-        SaleDTO saleResult = saleServices.update(saleDTO);
+        SaleDTO saleResult = saleServicesImpl.update(1L, SaleDTO.saleDTO(saleToUpdate));
 
         assertAll("Sale",
                 () -> assertThat(saleResult.getStatus(), Matchers.is(Status.PENDING)));

@@ -1,14 +1,15 @@
 package br.com.phoebustecnologia.Library.services.bookTestService;
 
 import br.com.phoebustecnologia.Library.Repositories.BookRepository;
-import br.com.phoebustecnologia.Library.dto.BookDTO;
+import br.com.phoebustecnologia.Library.dto.BookDTO.BookDTO;
 import br.com.phoebustecnologia.Library.model.Book;
-import br.com.phoebustecnologia.Library.services.BookServices;
+import br.com.phoebustecnologia.Library.services.BookServices.BookServicesImpl;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,7 +23,8 @@ import java.util.stream.Stream;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test Book Service")
@@ -32,11 +34,12 @@ class BookServicesTest {
     private BookRepository bookRepository;
 
     @InjectMocks
-    private BookServices bookServices;
+    private BookServicesImpl bookServicesImpl;
 
 
     @BeforeEach
     void setUp() {
+        this.bookServicesImpl = new BookServicesImpl(bookRepository);
     }
 
 
@@ -49,7 +52,7 @@ class BookServicesTest {
                         BookTestBuilder.createdBook().title("bookTest2").build()).collect(Collectors.toList())
         );
 
-        List<Book> bookList = bookRepository.findAll();
+        List<BookDTO> bookList = bookServicesImpl.findAll();
 
         assertAll("Books",
                 () -> assertThat(bookList.size(), is(2)),
@@ -62,15 +65,16 @@ class BookServicesTest {
 
     }
 
+
     @Test
     @DisplayName("Should return book by Category")
-    void ShouldFindByCategoryId() {
+    void ShouldReturnBookByCategoryId() {
         when(bookRepository.findByCategoryId(1L)).thenReturn(
                 Stream.of(BookTestBuilder.createdBook().id(1L).title("bookTest1").build())
                         .collect(Collectors.toList())
         );
 
-        List<BookDTO> bookList = bookServices.findByCategoryId(1L);
+        List<BookDTO> bookList = bookServicesImpl.findByCategoryId(1L);
 
         assertAll("Books",
                 () -> assertThat(bookList.size(), is(1)),
@@ -83,13 +87,13 @@ class BookServicesTest {
 
     @Test
     @DisplayName("Should return book by Id")
-    void ShouldFindById() throws Throwable {
+    void ShouldFindById(){
 
         Long id = anyLong();
 
-        Optional<BookDTO> bookCreated = Optional.of(BookTestBuilder.createdBookDTO().build());
+        Optional<Book> bookCreated = Optional.of(BookTestBuilder.createdBook().build());
         when(bookRepository.findById(id)).thenReturn(bookCreated);
-        BookDTO bookSalved = bookServices.findById(id);
+        BookDTO bookSalved = bookServicesImpl.findById(id);
 
         assertAll("Book",
                 () -> assertThat(bookSalved.getTitle(), is("Título")),
@@ -105,9 +109,11 @@ class BookServicesTest {
     @Test
     @DisplayName("Should save a book")
     void ShouldSaveBook() {
-        BookDTO mock = BookTestBuilder.createdBookDTO().build();
-        when(bookRepository.save(mock)).thenReturn(mock);
-        BookDTO book = bookServices.save(mock);
+        Book bookSaved = BookTestBuilder.createdBook().build();
+        when(bookRepository.save(ArgumentMatchers.any(Book.class)))
+                .thenReturn(BookTestBuilder.createdBook().build());
+
+        BookDTO book = bookServicesImpl.save(BookDTO.bookSavedDTO(bookSaved));
 
 
         assertAll("Book",
@@ -126,27 +132,27 @@ class BookServicesTest {
     @DisplayName("Should delete a Book")
     void ShouldDeleteBook() {
 
-        when(bookRepository.existsById(anyLong())).thenReturn(true);
-        bookServices.delete(1L);
-        verify(bookRepository).existsById(anyLong());
+        Long id = anyLong();
+        Optional<Book> bookCreated = Optional.of(BookTestBuilder.createdBook().build());
+        when(bookRepository.findById(id)).thenReturn(bookCreated);
+        bookServicesImpl.delete(1L);
     }
 
     @Test
     @DisplayName("Should updated books to List")
-    void update_whenSuccessful() throws Throwable {
+    void update_whenSuccessful()  {
 
-        BookDTO book = BookTestBuilder.createdBookDTO().id(2L).build();
+        Book bookToUpdate = BookTestBuilder.createdBook().id(1L).build();
 
-        Optional<BookDTO> OBook = Optional.of(book);
+        Optional<Book> bookOpt = Optional.of(bookToUpdate);
 
-        when(bookRepository.existsById(2L)).thenReturn(true);
-        when(bookRepository.findById(anyLong())).thenReturn(OBook);
+        when(bookRepository.findById(anyLong())).thenReturn(bookOpt);
 
-        book.setTitle("Development");
+        bookToUpdate.setTitle("Development");
 
-        when(bookRepository.save(book)).thenReturn(book);
+        when(bookRepository.save(ArgumentMatchers.any(Book.class))).thenReturn(bookToUpdate);
 
-        BookDTO bookResult = bookServices.update(book);
+        BookDTO bookResult = bookServicesImpl.update(1L, BookDTO.bookDTO(bookToUpdate));
 
         assertAll("Book",
                 () -> assertThat(bookResult.getTitle(), Matchers.is("Development")));

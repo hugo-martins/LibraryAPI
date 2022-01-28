@@ -1,7 +1,6 @@
 package br.com.phoebustecnologia.Library.Repositories;
 
-import br.com.phoebustecnologia.Library.dto.ClientDTO;
-import br.com.phoebustecnologia.Library.dto.SaleDTO;
+import br.com.phoebustecnologia.Library.dto.SaleDTO.SaleDTO;
 import br.com.phoebustecnologia.Library.model.Sale;
 import br.com.phoebustecnologia.Library.model.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,9 +13,6 @@ import java.util.Optional;
 public interface SaleRepository extends JpaRepository <Sale, Long> {
 
 
-    List<SaleDTO> findByStatus(Status status);
+    List<Sale> findByStatus(Status status);
 
-    Optional findById(Long id);
-
-    SaleDTO save(SaleDTO saleDTO);
 }

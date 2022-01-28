@@ -2,15 +2,16 @@ package br.com.phoebustecnologia.Library.services.clientTestService;
 
 
 import br.com.phoebustecnologia.Library.Repositories.ClientRepository;
-import br.com.phoebustecnologia.Library.dto.ClientDTO;
+import br.com.phoebustecnologia.Library.dto.ClientDTO.ClientDTO;
 import br.com.phoebustecnologia.Library.model.Client;
 import br.com.phoebustecnologia.Library.model.SexClient;
-import br.com.phoebustecnologia.Library.services.ClientServices;
+import br.com.phoebustecnologia.Library.services.ClientServices.ClientServicesImpl;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,22 +25,24 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test Client Service")
 public class ClientServiceTest {
 
+
     @Mock
     private ClientRepository clientRepository;
 
     @InjectMocks
-    private ClientServices clientServices;
+    private ClientServicesImpl clientServicesImpl;
 
 
     @BeforeEach
-    void setUp() {}
+    void setUp() {
+        this.clientServicesImpl = new ClientServicesImpl(clientRepository);
+    }
 
 
     @Test
@@ -48,11 +51,11 @@ public class ClientServiceTest {
 
         when(clientRepository.findAll()).thenReturn(
                 Stream.of(ClientTestBuilder.createClient().name("clientTest1").build(),
-                        ClientTestBuilder.createClient().name("clientTest2").build())
+                                ClientTestBuilder.createClient().name("clientTest2").build())
                         .collect(Collectors.toList())
         );
 
-        List<Client> clientList = clientRepository.findAll();
+        List<ClientDTO> clientList = clientServicesImpl.findAll();
 
         assertAll("Clients",
                 () -> assertThat(clientList.size(), is(2)),
@@ -66,13 +69,13 @@ public class ClientServiceTest {
 
     @Test
     @DisplayName("Should return client by Id")
-    void ShouldFindByClientId() throws Throwable {
+    void ShouldFindByClientId() {
 
         Long id = anyLong();
 
-        Optional<ClientDTO> clientCreated = Optional.of(ClientTestBuilder.createClientDTO().build());
+        Optional<Client> clientCreated = Optional.of(ClientTestBuilder.createClient().build());
         when(clientRepository.findById(id)).thenReturn(clientCreated);
-        ClientDTO clientSaved = clientServices.findById(id);
+        ClientDTO clientSaved = clientServicesImpl.findById(id);
 
         assertAll("Client",
                 () -> assertThat(clientSaved.getName(), is("clientTest")),
@@ -83,12 +86,18 @@ public class ClientServiceTest {
         );
 
     }
+
     @Test
     @DisplayName("Should save a client")
     void ShouldSaveClient() {
-        ClientDTO mock = ClientTestBuilder.createClientDTO().build();
-        when(clientServices.save(mock)).thenReturn(mock);
-        ClientDTO client = clientServices.save(mock);
+
+        Client clientSaved = ClientTestBuilder.createClientSaved().build();
+
+        when(clientRepository.save(ArgumentMatchers.any(Client.class)))
+                .thenReturn(ClientTestBuilder.createClientSaved().build());
+
+        ClientDTO client = clientServicesImpl.save(ClientDTO.clientSavedDTO(clientSaved));
+
 
         assertAll("Client",
                 () -> assertThat(client.getName(), is("clientTest")),
@@ -103,32 +112,32 @@ public class ClientServiceTest {
     @Test
     @DisplayName("Should delete a client")
     void ShouldDeleteBook() {
+        Long id = anyLong();
+        Optional<Client> clientCreated = Optional.of(ClientTestBuilder.createClient().build());
+        when(clientRepository.findById(id)).thenReturn(clientCreated);
 
-        when(clientRepository.existsById(anyLong())).thenReturn(true);
-        clientServices.delete(1L);
-        verify(clientRepository).existsById(anyLong());
+        clientServicesImpl.delete(1L);
+
     }
 
     @Test
     @DisplayName("Should updated clients to List")
-    void update_whenSuccessful() throws Throwable {
+    void update_whenSuccessful() {
 
-        ClientDTO clientDTO = ClientTestBuilder.createClientDTO().id(1L).build();
+        Client clientToUpdate = ClientTestBuilder.createClient().build();
 
-        Optional<ClientDTO> clientOpt = Optional.of(clientDTO);
+        Optional<Client> clientOpt = Optional.of(clientToUpdate);
 
-        when(clientRepository.existsById(1L)).thenReturn(true);
         when(clientRepository.findById(anyLong())).thenReturn(clientOpt);
 
-        clientDTO.setName("client1");
+        clientToUpdate.setName("client nome");
 
-        when(clientRepository.save(clientDTO)).thenReturn(clientDTO);
+        when(clientRepository.save(ArgumentMatchers.any())).thenReturn(clientToUpdate);
 
-        ClientDTO clientResult = clientServices.update(clientDTO);
+        ClientDTO clientResult = clientServicesImpl.update(1L, ClientDTO.clientSavedDTO(clientToUpdate));
 
         assertAll("Client",
                 () -> assertThat(clientResult.getName(), Matchers.is("client1")));
-        }
-
+    }
 
 }

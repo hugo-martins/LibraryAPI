@@ -1,6 +1,6 @@
 package br.com.phoebustecnologia.Library.model;
 
-import br.com.phoebustecnologia.Library.dto.BookDTO;
+import br.com.phoebustecnologia.Library.dto.BookDTO.BookDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,7 +25,6 @@ public class Book implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-
     private String title;
 
     private String synopsis;
@@ -45,10 +44,25 @@ public class Book implements Serializable {
     @PrimaryKeyJoinColumn
     private Set<Category> categories = new HashSet<>();
 
+
     public static Book bookFrom(BookDTO bookDTO) {
         return Book
                 .builder()
                 .id(bookDTO.getId())
+                .title(bookDTO.getTitle())
+                .isbn(bookDTO.getIsbn())
+                .synopsis(bookDTO.getSynopsis())
+                .author(bookDTO.getAuthor())
+                .publicationYear(bookDTO.getPublicationYear())
+                .categories(bookDTO.getCategories())
+                .priceSell(bookDTO.getPriceSell())
+                .availableQuantity(bookDTO.getAvailableQuantity())
+                .build();
+    }
+
+    public static Book bookSaved(BookDTO bookDTO) {
+        return Book
+                .builder()
                 .title(bookDTO.getTitle())
                 .isbn(bookDTO.getIsbn())
                 .synopsis(bookDTO.getSynopsis())

@@ -1,6 +1,6 @@
 package br.com.phoebustecnologia.Library.model;
 
-import br.com.phoebustecnologia.Library.dto.CategoryDTO;
+import br.com.phoebustecnologia.Library.dto.CategoryDTO.CategoryDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,9 +29,16 @@ public class Category implements Serializable {
     @ManyToMany
     private final Set<Book> books = new HashSet<>();
 
+
     public static Category categoryFrom(CategoryDTO categoryDTO){
         return builder()
                 .id(categoryDTO.getId())
+                .name(categoryDTO.getName())
+                .build();
+    }
+
+    public static Category categorySaved(CategoryDTO categoryDTO){
+        return builder()
                 .name(categoryDTO.getName())
                 .build();
     }

@@ -1,7 +1,7 @@
 package br.com.phoebustecnologia.Library.services.saleTestService;
 
 
-import br.com.phoebustecnologia.Library.dto.SaleDTO;
+import br.com.phoebustecnologia.Library.dto.SaleDTO.SaleDTO;
 import br.com.phoebustecnologia.Library.model.Book;
 import br.com.phoebustecnologia.Library.model.Client;
 import br.com.phoebustecnologia.Library.model.Sale;
@@ -25,6 +25,7 @@ public class SaleTestBuilder {
                 .bookPurchase(books)
                 .valuePurchase(100.00);
     }
+
     public static SaleDTO.SaleDTOBuilder createdSaleDTO(){
         Client clientDTO = ClientTestBuilder.createClient().build();
         Set<Book> books = new HashSet<>();

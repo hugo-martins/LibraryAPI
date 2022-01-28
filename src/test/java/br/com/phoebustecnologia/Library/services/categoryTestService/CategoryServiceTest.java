@@ -1,16 +1,14 @@
 package br.com.phoebustecnologia.Library.services.categoryTestService;
 
 import br.com.phoebustecnologia.Library.Repositories.CategoryRepository;
-import br.com.phoebustecnologia.Library.dto.CategoryDTO;
+import br.com.phoebustecnologia.Library.dto.CategoryDTO.CategoryDTO;
 import br.com.phoebustecnologia.Library.model.Category;
-import br.com.phoebustecnologia.Library.services.CategoryServices;
-import org.hamcrest.Matchers;
+import br.com.phoebustecnologia.Library.services.CategoryServices.CategoryServicesImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -22,8 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test Category Service")
@@ -33,11 +30,14 @@ public class CategoryServiceTest {
     private CategoryRepository categoryRepository;
 
     @InjectMocks
-    private CategoryServices categoryServices;
+    private CategoryServicesImpl categoryServicesImpl;
+
 
 
     @BeforeEach
     void setUp() {
+        this.categoryServicesImpl = new CategoryServicesImpl(categoryRepository);
+
     }
 
     @Test
@@ -46,11 +46,11 @@ public class CategoryServiceTest {
 
         when(categoryRepository.findAll()).thenReturn(
                 Stream.of(CategoryTestBuilder.createdCategory().name("category").build(),
-                        CategoryTestBuilder.createdCategory().name("category2").build())
+                                CategoryTestBuilder.createdCategory().name("category2").build())
                         .collect(Collectors.toList())
         );
 
-        List<Category> categoryList = categoryRepository.findAll();
+        List<CategoryDTO> categoryList = categoryServicesImpl.findAll();
 
         assertAll("Categories",
                 () -> assertThat(categoryList.size(), is(2)),
@@ -61,13 +61,13 @@ public class CategoryServiceTest {
 
     @Test
     @DisplayName("Should return category by Id")
-    void ShouldFindById() throws Throwable {
+    void ShouldFindById() {
 
         Long id = anyLong();
 
-        Optional<CategoryDTO> categoryCreated = Optional.of(CategoryTestBuilder.createdCategoryDTO().build());
+        Optional<Category> categoryCreated = Optional.of(CategoryTestBuilder.createdCategory().build());
         when(categoryRepository.findById(id)).thenReturn(categoryCreated);
-        CategoryDTO categorySaved = categoryServices.findById(id);
+        CategoryDTO categorySaved = categoryServicesImpl.findById(id);
 
         assertAll("Category",
                 () -> assertThat(categorySaved.getName(), is("category"))
@@ -78,48 +78,52 @@ public class CategoryServiceTest {
 
     @Test
     @DisplayName("Should save a category")
-    void ShouldSaveBook() {
-        CategoryDTO mock = CategoryTestBuilder.createdCategoryDTO().build();
-        when(categoryRepository.save(mock)).thenReturn(mock);
-        CategoryDTO category = categoryServices.save(mock);
+    void ShouldSavedCategory() {
+        Category category = CategoryTestBuilder.createdSavedCategory().build();
 
+        when(categoryRepository.save(ArgumentMatchers.any(Category.class)))
+                .thenReturn(CategoryTestBuilder.createdSavedCategory().build());
+
+        CategoryDTO dto = categoryServicesImpl.save(CategoryDTO.categorySavedDTO(category));
 
         assertAll("Category",
-                () -> assertThat(category.getName(), is("category"))
-        );
+              () -> assertThat(dto.getName(), is("category")));
+
     }
 
     @Test
     @DisplayName("Should delete a Category")
-    void ShouldDeleteBook() {
-
-        when(categoryRepository.existsById(anyLong())).thenReturn(true);
-        categoryServices.delete(1L);
-        verify(categoryRepository).existsById(anyLong());
+    void ShouldDeleteCategory() {
+        Long id = anyLong();
+        Optional<Category> categoryCreated = Optional.of(CategoryTestBuilder.createdCategory().build());
+        when(categoryRepository.findById(id)).thenReturn(categoryCreated);
+        categoryServicesImpl.delete(1L);
     }
+
 
     @Test
     @DisplayName("Should updated categories to List")
-    void update_whenSuccessful() throws Throwable {
+    void update_whenSuccessful() {
 
-        CategoryDTO category = CategoryTestBuilder.createdCategoryDTO().id(1L).build();
+        Category categoryToUpdate = CategoryTestBuilder.createdCategory().build();
 
-        Optional<CategoryDTO> categoryOpt = Optional.of(category);
+        Optional<Category> categoryOptional  = Optional.of(categoryToUpdate);
 
-        when(categoryRepository.existsById(1L)).thenReturn(true);
-        when(categoryRepository.findById(anyLong())).thenReturn(categoryOpt);
+        when(categoryRepository.findById(anyLong())).thenReturn(categoryOptional);
 
-        category.setName("Romance");
+        categoryToUpdate.setName("ação");
 
-        when(categoryServices.save(category)).thenReturn(category);
+        when(categoryRepository.save(ArgumentMatchers.any(Category.class))).thenReturn(categoryToUpdate);
 
-        CategoryDTO categoryResult = categoryServices.update(category);
+        CategoryDTO categoryResult = categoryServicesImpl.update(1L, CategoryDTO.categoryDTO(categoryToUpdate));
 
         assertAll("Category",
-                () -> assertThat(categoryResult.getName(), Matchers.is("Romance"))
+                () -> assertThat(categoryResult.getName(), is("ação"))
         );
     }
 
 
 }
+
+
 

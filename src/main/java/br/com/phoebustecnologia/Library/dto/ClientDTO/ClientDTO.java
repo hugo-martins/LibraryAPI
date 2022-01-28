@@ -1,14 +1,9 @@
-package br.com.phoebustecnologia.Library.dto;
+package br.com.phoebustecnologia.Library.dto.ClientDTO;
 
-import br.com.phoebustecnologia.Library.model.Book;
-import br.com.phoebustecnologia.Library.model.Category;
 import br.com.phoebustecnologia.Library.model.Client;
 import br.com.phoebustecnologia.Library.model.SexClient;
 import lombok.*;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
@@ -44,6 +39,8 @@ public class ClientDTO implements Serializable {
                 .id(clientEntity.getId())
                 .name(clientEntity.getName())
                 .age(clientEntity.getAge())
+                .phone(clientEntity.getPhone())
+                .email(clientEntity.getEmail())
                 .sex(clientEntity.getSex())
                 .build();
 
@@ -51,6 +48,18 @@ public class ClientDTO implements Serializable {
 
     public static List<ClientDTO> ListFromAllClients (List<Client> clients) {
         return clients.stream().map(ClientDTO::clientDTO).collect(Collectors.toList());
+    }
+
+
+    public static ClientDTO clientSavedDTO(Client clientEntity){
+        return builder()
+                .name(clientEntity.getName())
+                .age(clientEntity.getAge())
+                .sex(clientEntity.getSex())
+                .email(clientEntity.getEmail())
+                .phone(clientEntity.getPhone())
+                .build();
+
     }
 
 }

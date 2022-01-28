@@ -1,6 +1,6 @@
 package br.com.phoebustecnologia.Library.model;
 
-import br.com.phoebustecnologia.Library.dto.SaleDTO;
+import br.com.phoebustecnologia.Library.dto.SaleDTO.SaleDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -44,6 +44,15 @@ public class Sale implements Serializable {
     public static Sale saleFROM (SaleDTO saleDTO){
         return builder()
                 .id(saleDTO.getId())
+                .client(saleDTO.getClient())
+                .bookPurchase(saleDTO.getBookPurchase())
+                .valuePurchase(saleDTO.getValuePurchase())
+                .datePurchase(saleDTO.getDatePurchase())
+                .status(saleDTO.getStatus())
+                .build();
+    }
+    public static Sale saleSaved (SaleDTO saleDTO){
+        return builder()
                 .client(saleDTO.getClient())
                 .bookPurchase(saleDTO.getBookPurchase())
                 .valuePurchase(saleDTO.getValuePurchase())

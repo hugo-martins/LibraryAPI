@@ -1,4 +1,4 @@
-package br.com.phoebustecnologia.Library.dto;
+package br.com.phoebustecnologia.Library.dto.BookDTO;
 
 import br.com.phoebustecnologia.Library.model.Book;
 import br.com.phoebustecnologia.Library.model.Category;
@@ -43,10 +43,9 @@ public class BookDTO implements Serializable {
     @NotNull
     private Integer availableQuantity;
 
-    @NotNull
     private Set<Category> categories;
 
-    public static  BookDTO bookDTO( Book bookEntity){
+    public static  BookDTO bookDTO(Book bookEntity){
         return BookDTO
                 .builder()
                 .id(bookEntity.getId())
@@ -61,8 +60,22 @@ public class BookDTO implements Serializable {
                 .build();
     }
 
-    public static List<BookDTO> ListFromAllBooks (List<Book> books) {
-        return books.stream().map(BookDTO::bookDTO).collect(Collectors.toList());
+    public static List<BookDTO> ListFromAllBooks (List<Book> book) {
+        return book.stream().map(BookDTO::bookDTO).collect(Collectors.toList());
+    }
+
+    public static BookDTO bookSavedDTO(Book bookEntity){
+        return BookDTO
+                .builder()
+                .title(bookEntity.getTitle())
+                .isbn(bookEntity.getIsbn())
+                .synopsis(bookEntity.getSynopsis())
+                .author(bookEntity.getAuthor())
+                .publicationYear(bookEntity.getPublicationYear())
+                .categories(bookEntity.getCategories())
+                .priceSell(bookEntity.getPriceSell())
+                .availableQuantity(bookEntity.getAvailableQuantity())
+                .build();
     }
 
 }

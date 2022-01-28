@@ -1,4 +1,4 @@
-package br.com.phoebustecnologia.Library.dto;
+package br.com.phoebustecnologia.Library.dto.SaleDTO;
 
 import br.com.phoebustecnologia.Library.model.Book;
 import br.com.phoebustecnologia.Library.model.Client;
@@ -47,15 +47,27 @@ public class SaleDTO  implements Serializable {
 
     public static SaleDTO saleDTO(Sale saleEntity){
         return builder()
+                .id(saleEntity.getId())
                 .client(saleEntity.getClient())
                 .bookPurchase(saleEntity.getBookPurchase())
                 .valuePurchase(saleEntity.getValuePurchase())
                 .datePurchase(saleEntity.getDatePurchase())
+                .status(saleEntity.getStatus())
                 .build();
     }
 
     public static List<SaleDTO> ListFromAllSales (List<Sale> sales) {
         return sales.stream().map(SaleDTO::saleDTO).collect(Collectors.toList());
+    }
+
+    public static SaleDTO saleSavedDTO(Sale saleEntity){
+        return builder()
+                .client(saleEntity.getClient())
+                .bookPurchase(saleEntity.getBookPurchase())
+                .valuePurchase(saleEntity.getValuePurchase())
+                .datePurchase(saleEntity.getDatePurchase())
+                .status(saleEntity.getStatus())
+                .build();
     }
 
 }

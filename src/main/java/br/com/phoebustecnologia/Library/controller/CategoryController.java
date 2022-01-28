@@ -1,10 +1,9 @@
 package br.com.phoebustecnologia.Library.controller;
 
-import br.com.phoebustecnologia.Library.dto.CategoryDTO;
-import br.com.phoebustecnologia.Library.services.CategoryServices;
+import br.com.phoebustecnologia.Library.dto.CategoryDTO.CategoryDTO;
+import br.com.phoebustecnologia.Library.services.CategoryServices.CategoryServicesImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,40 +16,39 @@ import java.util.List;
 public class CategoryController {
 
     @Autowired
-    CategoryServices categoryServices;
+    CategoryServicesImpl categoryServicesImpl;
+
 
     @ApiOperation("List of category")
     @GetMapping(value = "/all")
     public List<CategoryDTO> categoryList() {
-        return categoryServices.findAll();
+
+        return categoryServicesImpl.findAll();
     }
 
     @ApiOperation("Find an category by ID")
     @GetMapping(value = "/{id}")
-    public CategoryDTO findCategoryByID(@PathVariable Long id) throws Throwable {
-        return categoryServices.findById(id);
+    public CategoryDTO findCategoryByID(@PathVariable(name =  "id") Long id){
+        return categoryServicesImpl.findById(id);
 
     }
 
     @ApiOperation("Save an category")
     @PostMapping
-    public void addCategory(@RequestBody CategoryDTO category) {
-        categoryServices.save(category) ;
-
+    public CategoryDTO addCategory(@RequestBody CategoryDTO category) {
+        return categoryServicesImpl.save(category);
     }
 
     @ApiOperation("Delete on category")
     @DeleteMapping(value = "/{id}")
     public void  deleteCategory(@PathVariable Long id) {
-        categoryServices.delete(id);
+        categoryServicesImpl.delete(id);
 
     }
 
     @ApiOperation("Update on category")
     @PutMapping(value = "/{id}")
-    public void updateCategory(@RequestBody @NotNull CategoryDTO categoryDTO, @PathVariable Long id) throws Throwable {
-        categoryDTO.setId(id);
-        categoryServices.update(categoryDTO);
-
+    public CategoryDTO updateCategory(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO){
+         return categoryServicesImpl.update(id, categoryDTO);
     }
 }
