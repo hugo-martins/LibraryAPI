@@ -49,7 +49,8 @@ class BookServicesTest {
 
         when(bookRepository.findAll()).thenReturn(
                 Stream.of(BookTestBuilder.createdBook().title("bookTest1").build(),
-                        BookTestBuilder.createdBook().title("bookTest2").build()).collect(Collectors.toList())
+                        BookTestBuilder.createdBook().title("bookTest2").build())
+                        .collect(Collectors.toList())
         );
 
         List<BookDTO> bookList = bookServicesImpl.findAll();
@@ -110,6 +111,7 @@ class BookServicesTest {
     @DisplayName("Should save a book")
     void ShouldSaveBook() {
         Book bookSaved = BookTestBuilder.createdBook().build();
+
         when(bookRepository.save(ArgumentMatchers.any(Book.class)))
                 .thenReturn(BookTestBuilder.createdBook().build());
 

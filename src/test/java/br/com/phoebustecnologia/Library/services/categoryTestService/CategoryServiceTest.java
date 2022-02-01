@@ -84,6 +84,7 @@ public class CategoryServiceTest {
         when(categoryRepository.save(ArgumentMatchers.any(Category.class)))
                 .thenReturn(CategoryTestBuilder.createdSavedCategory().build());
 
+
         CategoryDTO dto = categoryServicesImpl.save(CategoryDTO.categorySavedDTO(category));
 
         assertAll("Category",

@@ -23,6 +23,7 @@ public class BookController {
     @ApiOperation("Get all book")
     @GetMapping(path = "/all")
     public List<BookDTO> findAll() {
+
         return bookServicesImpl.findAll();
     }
 

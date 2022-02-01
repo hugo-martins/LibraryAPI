@@ -130,7 +130,7 @@ public class ClientServiceTest {
 
         when(clientRepository.findById(anyLong())).thenReturn(clientOpt);
 
-        clientToUpdate.setName("client nome");
+        clientToUpdate.setName("client1");
 
         when(clientRepository.save(ArgumentMatchers.any())).thenReturn(clientToUpdate);
 
